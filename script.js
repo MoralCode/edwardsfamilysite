@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const filename = `events.json`;
     const container = document.getElementById('this-day-in-history');
-
+	const date = document.getElementById("tdih-date")
     fetch(filename)
         .then(response => {
             if (!response.ok) {
@@ -19,6 +19,8 @@ document.addEventListener('DOMContentLoaded', () => {
         })
 		.then(data => data[month][day])
         .then(data => {
+			date.innerHTML = today.toLocaleDateString('en-US', {month: 'long', day: 'numeric'})
+			// debugger;
             if (data.length > 0) {
                 const ul = document.createElement('ul');
                 data.forEach(event => {
@@ -27,14 +29,18 @@ document.addEventListener('DOMContentLoaded', () => {
                     li.textContent = event.description;
                     ul.appendChild(li);
                 });
-                container.innerHTML = `<h2>On ${today.toLocaleDateString('en-US', {month: 'long', day: 'numeric'})} in Family History:</h2>`;
                 container.appendChild(ul);
             } else {
-                container.innerHTML = `<h2>On ${today.toLocaleDateString('en-US', {month: 'long', day: 'numeric'})} in Family History:</h2><p>... nothing happened for deceased family members!</p>`;
+				const p = document.createElement("p")
+				p.appendChild(document.createTextNode("... nothing happened for family members!"))
+                container.appendChild(p)
             }
         })
         .catch(error => {
             console.error('Error fetching daily events:', error);
-            container.innerHTML = `<h2>On ${today.toLocaleDateString('en-US', {month: 'long', day: 'numeric'})} in Family History:</h2><p>No events found for deceased family members today.</p>`;
+			date.innerHTML = today.toLocaleDateString('en-US', {month: 'long', day: 'numeric'})
+			const p = document.createElement("p")
+			p.appendChild(document.createTextNode("No events found for family members today."))
+			container.appendChild(p)
         });
 });
